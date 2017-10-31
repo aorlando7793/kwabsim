@@ -178,18 +178,17 @@ class Cavity(object):
         return q
 
     def q(self, z):
-        free_space = [optic for optic in self.cavity if optic[0] == 'D'] 
+        #free_space = [optic for optic in self.cavity if optic[0] == 'D'] 
         q = self.q0
-        d = 0
+        d = 0 #running cumulative distance of free space elements
         for optic in self.cavity:
-            if optic[0] == 'D':
-                d += optic[1]
-
-            if d > z:
-                break
-            else:
+            if optic[0] == 'D' and ((z - d) > optic[1]):
                 q = self.prop_q0(q, optics[optic[0]](optic[1]))
-                continue
+                d += optic[1]
+            elif optic[0] != 'D':
+                q = self.prop_q0(q, optics[optic[0]](optic[1]))
+            else:
+                break
         q += z - d
         return q
 
@@ -200,12 +199,12 @@ ds28 = Cavity('datatest.dat', 1064*10**(-7))
 
 print('q at start is:', ds28.q0)
 
-print('q at 20cm is:', ds28.q(20))
+print('q at 50cm is:', ds28.q(50))
 
-q20 = ds28.q(20)
+q50 = ds28.q(50)
 
-zo = q20.real
-zr = q20.imag
+zo = q50.real
+zr = q50.imag
 
 waist = np.sqrt((4*ds28.lam/math.pi)*(zr + ((zo)**2)/zr))
-print ('waist  at 20cm is', waist)
+print ('waist  at 50cm is', waist)
