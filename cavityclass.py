@@ -200,19 +200,21 @@ class Cavity(object):
 		waist = np.sqrt((4*self.lam/math.pi)*(zR + ((z0)**2)/zR))
 		return waist
 
-	def plot_waist(self, cavity, n_points):
+	def plot_waist(self, n_points):
 		ds = [optic[1] for optic in self.cavity if optic[0] == 'D']
 		L = sum(ds)
 		Z = np.linspace(0,L,num=n_points)
-		W = [ds28.waist(z) for z in Z]
+		W = [self.waist(z) for z in Z]
+		self.W = W
 		plt.plot(Z,W)
-		return plt.show()
+		return
 
 	def insert_optic(self, optic, par, pos):
 		#Inserts ['optic',par] as the pos'th position in [cavity]
-		cav1 = self.cavity[:pos]
-		cav2 = self.cavity[pos:]
-		return cav1 + [[optic,par]]+ cav2
+		cav1 = self.cavity[:pos-1]
+		cav2 = self.cavity[pos-1:]
+		self.cavity = cav1 + [[optic,par]]+ cav2        
+		return
 
 	#def multiply_optic(pos,start,stop,step,cavity):
 		# Add ['X',start,stop,step] after the pos'th optic in [cavity]
@@ -220,7 +222,8 @@ class Cavity(object):
 
 	def remove_optic(self, pos):
 		#Removes pos'th optic
-		return self.cavity[:pos]+self.cavity[pos+1:]
+		self.cavity = self.cavity[:pos-1]+self.cavity[pos:]
+		return
 
 	def get_x_cav(self):
 		x_cav = self.cavity
@@ -249,10 +252,10 @@ class Cavity(object):
 		self.y_cav = y_cav
 		return
 
-	def plot_waist_XY(self, n_points):
-		self.get_x_cav()
-		self.get_y_cav()
-		if self.x_cav == self.y_cav:
+	#def plot_waist_XY(self, n_points):
+		#self.get_x_cav()
+		#self.get_y_cav()
+		#if self.x_cav == self.y_cav:
 
 
 
@@ -260,13 +263,18 @@ class Cavity(object):
 	
 
 
-ds28 = Cavity('datatest.dat', 1064*10**(-7))
+#ds28 = Cavity('datatest.dat', 1064*10**(-7))
+#ds28.plot_waist(1000)
+#print(ds28.W)
+#plt.show()
 
-print('q at start is:', ds28.q0)
 
-print('q at 50cm is:', ds28.q(50))
 
-print ('waist  at 50cm is', ds28.waist(50))
+#print('q at start is:', ds28.q0)
+
+#print('q at 50cm is:', ds28.q(50))
+
+#print ('waist  at 50cm is', ds28.waist(50))
 
 
 
