@@ -62,10 +62,13 @@ class Cavity(object):
         self.lam = lam
         self.rtm = self.get_RTM()
         if self.check_stab():
+            self.is_stable = True
             self.q0 = self.get_q0()
-            print('Cavity is Stable!!!!')
+            self.L = self.L()
+            #print('Cavity is Stable!!!!')
         else:
-            print('Cavity is Unstable :(')
+            self.is_stable = False
+            #print('Cavity is Unstable :(')
 
 
 
@@ -275,16 +278,17 @@ class Cavity(object):
             y_cav.plot_waist(n_points, lab='y-axis')
         return
 
-
-
+    def L(self):
+        space = [optic[1] for optic in self.cavity if optic[0] == 'D']
+        return sum(space)
 #cavity_list = [['M', 200.0],['D',1.0],['M',0.0]]
 #print cavity_list
-ds28 = Cavity('datatest.dat', 1064*10**(-7))
-ds28.plot_waist_XY(1000)
-plt.legend()
-plt.xlabel('Distance(cm)')
-plt.ylabel('Waist(cm)')
-plt.show()
+#ds28 = Cavity('datatest.dat', 1064*10**(-7))
+#ds28.plot_waist_XY(1000)
+#plt.legend()
+#plt.xlabel('Distance(cm)')
+#plt.ylabel('Waist(cm)')
+#plt.show()
 
 #x_cav = ds28.get_x_cav()
 #print x_cav.cavity
