@@ -31,8 +31,8 @@ def vary_param(cav_inst, params, pos, optic):
 
 thermal_range = np.arange(16,22,.1)
 start_cav = Cavity('datatest.dat',LAM)
-dist = np.arange(10,35,1)
-rates = vary_param(start_cav, dist , 2, 'D')
-plt.plot(dist, rates)
+f = np.arange(25,100,1)
+rates = vary_param(start_cav, f , 9, 'L')
+plt.plot(f, rates)
 plt.show()
     

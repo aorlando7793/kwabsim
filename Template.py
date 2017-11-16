@@ -3,4 +3,5 @@ import math
 import matplotlib.pyplot as plt
 from cavityclass import *
 
-LAM = 1064*10**(-7)
+M_2 = 1
+LAM = 1064*10**(-7) * M_2
