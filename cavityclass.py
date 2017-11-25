@@ -5,15 +5,6 @@ import matplotlib.pyplot as plt
 #======================================================
 #Define preliminary functions that are not contained in the Cavity class.
 
-def is_number(s):
-    try:
-        float(s)
-        return True
-    except ValueError:
-        return False
-    #We'll need this to determine if a string represents a paramter or 
-    # not
-
 #Ray Trace Matricies
 #================================================
 
@@ -52,6 +43,7 @@ def m_brewster_inv(n):
     k = np.cos(theta_I)/np.cos(theta_R)
     return np.array([[1, 0],[0, 1/k]])
 #===================================================
+#Dictionary of optics that corrrespond to their respective ray trace matrices
 
 optics = {
     'D':m_freeSpace,
