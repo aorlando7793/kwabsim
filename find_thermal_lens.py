@@ -6,13 +6,13 @@ from cavityclass import *
 
 save_path = 'C:/Users/R&D Group/Python/kwabsim-master/ThermalLensing/F -100 -100 35 F'
 
-V_i = int(input('Enter Position of Nd:YVO_4 in Cavity:'))
-M_2 = float(input('Enter M-Squared:'))
+V_i = int(input('Enter Position of Nd:YVO_4 in Cavity:    '))
+M_2 = float(input('Enter M-Squared:    '))
 LAM = 1064*10**(-7) * M_2
-zr = float(input('Enter Rayleigh Range:'))
+zr = float(input('Enter Rayleigh Range:    '))
 zr_inv = 1.0/zr 
 
-ds28 = Cavity('datatest.dat',LAM)
+ds28 = Cavity('testfile.dat',LAM)
 
 #laser_list = [newcav = ds28.remove_optic(5).insert_optic('L',i,5) for i in np.arange(15,25,.1) if newcav.is_stable]
 laser_list = []
