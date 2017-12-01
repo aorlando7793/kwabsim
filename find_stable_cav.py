@@ -29,9 +29,11 @@ def vary_param(cav_inst, params, pos, optic):
         rates.append(stability_rate(newcav, thermal_range, 5))
     return rates
 
-thermal_range = np.arange(16,22,.1)
+thermal_range = np.arange(16,24,.01)
 start_cav = Cavity('testfile.dat',LAM)
-f = np.arange(-100,-25,1)
-rates = vary_param(start_cav, f , 9, 'L')
-plt.plot(f, rates)
-plt.show()
+print(stability_rate(start_cav,thermal_range,5))
+
+#f = np.arange(-100,-25,1)
+#rates = vary_param(start_cav, f , 9, 'L')
+#plt.plot(f, rates)
+#plt.show()

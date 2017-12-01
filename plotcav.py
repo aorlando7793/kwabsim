@@ -6,7 +6,10 @@ from cavityclass import *
 M_2 = 1
 LAM = 1064*10**(-7) * M_2
 
-ds28 = Cavity('testfile.dat', LAM)
+ds28 = Cavity('ds28.dat', LAM)
+
+print(ds28.q(ds28.L))
+
 Z, W = ds28.plot_waist(250)
 
 fig = plt.figure(figsize=(10,7))

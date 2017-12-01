@@ -98,7 +98,7 @@ class Cavity(object):
     # Class Methods:
 
     def unfold_Cav(self):
-        return self.cavity[1:-1]+list(reversed(self.cavity))[1:-1]
+        return self.cavity[0:]+list(reversed(self.cavity))[1:-1]
 
     def get_RTM(self):
         cavity = self.unfold_Cav()
@@ -137,8 +137,7 @@ class Cavity(object):
         q = (q0*a + b)/(q0*c + d)
         return q
 
-    def q(self, z):
-        #free_space = [optic for optic in self.cavity if optic[0] == 'D'] 
+    def q(self, z): 
         q = self.q0
         d = 0 #running cumulative distance of free space elements
         for optic in self.cavity:
@@ -171,10 +170,6 @@ class Cavity(object):
         cav2 = self.cavity[pos-1:]
         new_cavity = cav1 + [[optic,par]]+ cav2        
         return Cavity(new_cavity,self.lam)
-
-    #def multiply_optic(pos,start,stop,step,cavity):
-        # Add ['X',start,stop,step] after the pos'th optic in [cavity]
-        #return cavity[:pos+1] + [['X',start,stop,step]] + cavity[pos+1:]
 
     def remove_optic(self, pos):
         #Removes pos'th optic
