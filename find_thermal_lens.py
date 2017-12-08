@@ -14,8 +14,6 @@ LAMx = LAM * M_2x
 LAMy = LAM * M_2y
 zrx = float(input('Enter Rayleigh Range for x axis:    '))
 zry = float(input('Enter Rayleigh Range for y axis:    '))
-zr_invx = 1.0/zrx
-zr_invy = 1.0/zry
 
 ds28 = Cavity('ds28.dat', LAM)
 ds28_x = Cavity(ds28.get_xcav().cavity, LAMx)
@@ -31,8 +29,8 @@ for i in np.arange(10,40,.01):
         laser_listx.append(new_xcav)
         laser_listy.append(new_ycav)
 #diff is a list of how much each cavity's initial q differs from the experimental value.
-diffx = [abs(zr_invx - (1/laser.q0.imag)) for laser in laser_listx]
-diffy = [abs(zr_invy - (1/laser.q0.imag)) for laser in laser_listy]
+diffx = [abs(zrx - laser.q0.imag) for laser in laser_listx]
+diffy = [abs(zry - laser.q0.imag) for laser in laser_listy]
 #finds index of minimum difference
 min_ix = diffx.index(min(diffx))
 bestfit_x = laser_listx[min_ix]

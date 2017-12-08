@@ -7,7 +7,7 @@ V_i = int(input('Enter Position of Nd:YVO_4 in Cavity:    '))
 M_2 = float(input('Enter M-Squared: '))
 LAM = 1064*10**(-7) * M_2
 
-ds28 = Cavity('ds28_new.dat',LAM)
+ds28 = Cavity('ds28.dat',LAM)
 
 #Set "reasonable" range for thermal lensing
 thermal_range = np.arange(16,24,.1)
