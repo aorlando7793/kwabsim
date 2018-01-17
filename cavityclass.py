@@ -77,7 +77,7 @@ class Cavity(object):
             #print('Cavity is Stable!!!!')
         else:
             self.is_stable = False
-            #print('Cavity is Unstable :(')
+            print('Cavity is Unstable :(')
 
     #=========================================
     #Interpretting cavity files:
@@ -158,9 +158,7 @@ class Cavity(object):
         return waist
 
     def plot_waist(self, n_points):
-        ds = [optic[1] for optic in self.cavity if optic[0] == 'D']
-        L = sum(ds)
-        Z = np.linspace(0,L,num=n_points)
+        Z = np.linspace(0,self.L,num=n_points)
         W = [self.waist(z) for z in Z]
         return Z, W
 
@@ -193,7 +191,7 @@ class Cavity(object):
         off = 1
         while(i<len(self.cavity)):
             if self.cavity[i][0] == 'Cx':
-                ycav = self.remove_optic(i+off)
+                ycav = ycav.remove_optic(i+off)
                 off += -1
             elif self.cavity[i][0] == 'B':
                 ycav = ycav.remove_optic(i+off)
@@ -204,3 +202,31 @@ class Cavity(object):
     def L(self):
         space = [optic[1] for optic in self.cavity if optic[0] == 'D']
         return sum(space)
+
+    def div(self, z):
+    	h = .01
+    	if z < h:
+    		d = (self.waist(z+h) - self.waist(z))/h
+    	elif z > (self.L - h):
+    		d = (self.waist(z) - self.waist(z-h))/h
+    	else:
+    		d = (self.waist(z+h) - self.waist(z-h))/(2*h)
+    	return d
+
+
+if __name__ == "__main__":
+	M_2 = 1
+	LAM = 1064*10**(-7) * M_2
+
+	cav_parts = [['M',100],['D',21],['M',-70],['D',3.5],['L',17],['D', 3.5],['M', -100],['D',19],['B',1.5],['D',5],['M',0]]
+	laser = Cavity(cav_parts, LAM)
+	
+	#test spot size plot
+	Z, W = laser.plot_waist(200)
+	plt.plot(Z,W)
+	plt.show()
+
+	#test divergence plot
+	D = [laser.div(z) for z in Z]
+	plt.plot(Z,D)
+	plt.show()
