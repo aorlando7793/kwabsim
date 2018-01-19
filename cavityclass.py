@@ -77,7 +77,7 @@ class Cavity(object):
             #print('Cavity is Stable!!!!')
         else:
             self.is_stable = False
-            print('Cavity is Unstable :(')
+            #print('Cavity is Unstable :(')
 
     #=========================================
     #Interpretting cavity files:
@@ -175,29 +175,28 @@ class Cavity(object):
         return Cavity(new_cavity, self.lam)
 
     def get_xcav(self):
-        xcav = self
-        i = 0
-        off = 1
-        while(i<len(self.cavity)):
-            if self.cavity[i][0] == 'Cy':
-                xcav = xcav.remove_optic(i+off)
-                off += -1
-            i += 1
-        return Cavity(xcav.cavity, self.lam)
+        xcav_input = []
+        for optic in self.cavity:
+            if optic[0] == 'M':
+                #this will account for mirrors at a non-normal AOI
+                #effective roc = roc*cos(AOI)
+                new_optic = [optic[0], optic[1]*np.cos(optic[2]*math.pi/180)]
+                xcav_input.append(new_optic)
+            elif optic[0] != 'Cy':
+            	xcav_input.append(optic)
+        return Cavity(xcav_input, self.lam)
 
     def get_ycav(self):
-        ycav = self
-        i = 0
-        off = 1
-        while(i<len(self.cavity)):
-            if self.cavity[i][0] == 'Cx':
-                ycav = ycav.remove_optic(i+off)
-                off += -1
-            elif self.cavity[i][0] == 'B':
-                ycav = ycav.remove_optic(i+off)
-                off += -1
-            i += 1
-        return Cavity(ycav.cavity, self.lam)
+        ycav_input = []
+        for optic in self.cavity:
+            if optic[0] == 'M':
+            	#this will account for mirrors at a non-normal AOI
+            	#effective roc = roc/cos(AOI)
+            	new_optic = [optic[0], optic[1]/np.cos(optic[2]*math.pi/180)]
+            	ycav_input.append(new_optic)
+            elif (optic[0] != 'B' and optic[0] != 'Cx'):
+                ycav_input.append(optic)
+        return Cavity(ycav_input, self.lam)
 
     def L(self):
         space = [optic[1] for optic in self.cavity if optic[0] == 'D']
@@ -213,20 +212,56 @@ class Cavity(object):
     		d = (self.waist(z+h) - self.waist(z-h))/(2*h)
     	return d
 
+    def astigmatism(self, z):
+    	xcav = self.get_xcav()
+    	ycav = self.get_ycav()
+    	q_x = xcav.q(z)
+    	q_y = ycav.q(z)
+    	diff_wl = abs(q_x.real - q_y.real)
+    	avg_Rayleigh = (q_x.imag + q_y.imag)/2
+    	return diff_wl/avg_Rayleigh
+
 
 if __name__ == "__main__":
 	M_2 = 1
 	LAM = 1064*10**(-7) * M_2
 
-	cav_parts = [['M',100],['D',21],['M',-70],['D',3.5],['L',17],['D', 3.5],['M', -100],['D',19],['B',1.5],['D',5],['M',0]]
+	cav_parts = [
+		['M', 100, 0],
+		['D', 11],
+		['D', 10],
+		['M', -70, 20],
+		['D', 3.5],
+		['Cy', 19],
+		['Cx', 17],
+		['D', 3.5],
+		['M', -100, 20],
+		['D', 19],
+		['B', 1.5],
+		['D', 5],
+		['M', 0, 0]]
 	laser = Cavity(cav_parts, LAM)
 	
 	#test spot size plot
-	Z, W = laser.plot_waist(200)
-	plt.plot(Z,W)
+	y_laser = laser.get_ycav()
+	x_laser = laser.get_xcav()
+	Zy, Wy = y_laser.plot_waist(200)
+	Zx, Wx = x_laser.plot_waist(200)
+	plt.plot(Zy,Wy)
+	plt.plot(Zx,Wx)
 	plt.show()
 
+
 	#test divergence plot
-	D = [laser.div(z) for z in Z]
-	plt.plot(Z,D)
+	Dx = [x_laser.div(zx) for zx in Zx]
+	Dy = [y_laser.div(zy) for zy in Zy]
+	plt.plot(Zx,Dx)
+	plt.plot(Zy,Dy)
+	plt.show()
+
+	#print astigmatism at THG
+	print('Astigmatism at THG', laser.astigmatism(laser.L - 5.1))
+	Z = np.linspace(0,laser.L,num=200)
+	A = [laser.astigmatism(z) for z in Z]
+	plt.plot(Z,A)
 	plt.show()
