@@ -264,12 +264,12 @@ if __name__ == "__main__":
     laser = Cavity(cav_parts, LAM)
     
     #test spot size plot
-    y_laser = laser.get_ycav()
     x_laser = laser.get_xcav()
-    Zy, Wy = y_laser.plot_waist(200)
+    y_laser = laser.get_ycav()
     Zx, Wx = x_laser.plot_waist(200)
-    plt.plot(Zy,Wy)
+    Zy, Wy = y_laser.plot_waist(200)
     plt.plot(Zx,Wx)
+    plt.plot(Zy,Wy)
     plt.show()
 
 
