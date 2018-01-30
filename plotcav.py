@@ -20,7 +20,7 @@ ax.set_ylim(0,.15)
 xcav = Cavity(laser.get_xcav().cavity, LAM_x)
 ycav = Cavity(laser.get_ycav().cavity, LAM_y)
 
-if xcav == ycav:
+if xcav.cavity == ycav.cavity:
     print('hi')
     Z, W = laser.plot_waist(250)
     ax.plot(Z,W)
@@ -31,7 +31,7 @@ else:
     ax.plot(Zy,Wy,label='ycav')
     ax.legend()
 print('X-Axis')
-print(xcav.cav_analysis())
+print(xcav.analysis())
 print('Y-Axis')
-print(ycav.cav_analysis())
+print(ycav.analysis())
 plt.show()

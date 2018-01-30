@@ -80,10 +80,10 @@ class Cavity(object):
             self.is_stable = True
             self.q0 = self.get_q0()
             self.L = self.L()
-            #print('Cavity is Stable!!!!')
+            print('Cavity is Stable!!!!')
         else:
             self.is_stable = False
-            #print('Cavity is Unstable :(')
+            print('Cavity is Unstable :(')
 
     #=========================================
     #Interpretting cavity files:
@@ -124,6 +124,7 @@ class Cavity(object):
 
     def check_stab(self):
         x = (self.rtm[0][0]+self.rtm[1][1]+2)/4.0
+        #print('x =',x )
         if((x>0) & (x<1)):
             return True
         return False
@@ -178,7 +179,7 @@ class Cavity(object):
     def get_xcav(self):
         xcav_input = []
         for optic in self.cavity:
-            if optic[0] == 'M':
+            if (optic[0] == 'M' and len(optic) == 3):
                 #this will account for mirrors at a non-normal AOI
                 #effective roc = roc*cos(AOI)
                 new_optic = [optic[0], optic[1]*np.cos(optic[2]*math.pi/180)]
@@ -190,7 +191,7 @@ class Cavity(object):
     def get_ycav(self):
         ycav_input = []
         for optic in self.cavity:
-            if optic[0] == 'M':
+            if (optic[0] == 'M' and len(optic) == 3):
                 #this will account for mirrors at a non-normal AOI
                 #effective roc = roc/cos(AOI)
                 new_optic = [optic[0], optic[1]/np.cos(optic[2]*math.pi/180)]
@@ -222,22 +223,36 @@ class Cavity(object):
         avg_Rayleigh = (q_x.imag + q_y.imag)/2
         return diff_wl/avg_Rayleigh
 
-    def cav_analysis(self):
+    def analysis(self):
         q = self.q0
         Q = []
+        Z_R = []
+        W = []
+        D = []
         optic_abrev = []
         for optic in self.cavity:
             optic_abrev.append(optic[0])
             q = prop_q(q, optics[optic[0]](optic[1]))
             Q.append(q)
+            #Rayleigh Range
+            z_r = q.imag
+            Z_R.append(z_r)
+            #Spot Size
+            w = np.sqrt((4*self.lam/math.pi)*(z_r + ((q.real)**2)/z_r))
+            W.append(w)
+            #Divergence
+            d = (q.real*4*self.lam/math.pi)/(q.imag*w)
+            D.append(d)
+            
+            
         #Rayleigh range at each optic
-        R = [q.imag for q in Q]
+        #R = [q.imag for q in Q]
         #Spot-size at each optic
-        W = [np.sqrt((4*self.lam/math.pi)*(q.imag + ((q.real)**2)/q.imag)) for q in Q]
+        #W = [np.sqrt((4*self.lam/math.pi)*(q.imag + ((q.real)**2)/q.imag)) for q in Q]
         #Divergence at each optic
-        D = [(q.real*4*self.lam/math.pi)/(q.imag*np.sqrt((4*self.lam/math.pi)*(((q.real)**2)/q.imag))) for q in Q]
+        #D = [(q.real*4*self.lam/math.pi)/(q.imag*np.sqrt((4*self.lam/math.pi)*(((q.real)**2)/q.imag))) for q in Q]
         #store data in dataframe
-        df = pd.DataFrame({'Rayleigh Range': R, 'Spot Size': W, 'Divergence': D}, index=optic_abrev)
+        df = pd.DataFrame({'Rayleigh Range': Z_R, 'Spot Size': W, 'Divergence': D}, index=optic_abrev)
         return df
 
 
@@ -289,6 +304,6 @@ if __name__ == "__main__":
 
     #print dataframe of cavity analysis
     print('Y-Axis')
-    print(y_laser.cav_analysis())
+    print(y_laser.analysis())
     print('X-Axis')
-    print(x_laser.cav_analysis())
+    print(x_laser.analysis())
