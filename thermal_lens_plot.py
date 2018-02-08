@@ -1,13 +1,14 @@
 import numpy as np
 import math
 import matplotlib.pyplot as plt
+from filehandling import filepath
 from cavityclass import *
 
 V_i = int(input('Enter Position of Nd:YVO_4 in Cavity:    '))
 M_2 = float(input('Enter M-Squared: '))
 LAM = 1064*10**(-7) * M_2
 
-laser = Cavity('testfile.dat',LAM)
+laser = Cavity(filepath, LAM)
 
 #Set "reasonable" range for thermal lensing
 thermal_range = np.arange(16,24,.1)

@@ -1,7 +1,9 @@
 import numpy as np
 import math
 import matplotlib.pyplot as plt
+from filehandling import filepath
 from cavityclass import *
+
 
 M_2x = float(input('Enter M-Squared for x-axis:    '))
 M_2y = float(input('Enter M-Squared for y-axis:    '))
@@ -9,7 +11,7 @@ LAM = 1064*10**(-7)
 LAM_x = LAM * M_2x
 LAM_y = LAM * M_2y
 
-laser = Cavity('testfile.dat', LAM)
+laser = Cavity(filepath, LAM)
 
 fig = plt.figure(figsize=(10,7))
 ax = fig.add_subplot(1,1,1)
@@ -21,7 +23,6 @@ xcav = Cavity(laser.get_xcav().cavity, LAM_x)
 ycav = Cavity(laser.get_ycav().cavity, LAM_y)
 
 if xcav.cavity == ycav.cavity:
-    print('hi')
     Z, W = laser.plot_waist(250)
     ax.plot(Z,W)
 else:

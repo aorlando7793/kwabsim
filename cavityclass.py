@@ -80,10 +80,10 @@ class Cavity(object):
             self.is_stable = True
             self.q0 = self.get_q0()
             self.L = self.L()
-            print('Cavity is Stable!!!!')
+            #print('Cavity is Stable!!!!')
         else:
             self.is_stable = False
-            print('Cavity is Unstable :(')
+            #print('Cavity is Unstable :(')
 
     #=========================================
     #Interpretting cavity files:
@@ -106,6 +106,7 @@ class Cavity(object):
     def unfold_Cav(self):
         return self.cavity[0:]+list(reversed(self.cavity))[1:-1]
 
+    
     def get_RTM(self):
         cavity = self.unfold_Cav()
         rtm = np.array([[1,0],[0,1]])
@@ -262,15 +263,14 @@ if __name__ == "__main__":
     
     cav_parts = [
         ['M', 100, 0],
-        ['D', 11],
         ['D', 10],
-        ['M', -70, 20],
+        ['D', 10],
+        ['M', -70, 25],
         ['D', 3.5],
-        ['Cy', 19],
-        ['Cx', 17],
+        ['L', 19],
         ['D', 3.5],
-        ['M', -100, 20],
-        ['D', 19],
+        ['M', -100, 25],
+        ['D', 19.5],
         ['B', 1.5],
         ['D', 5],
         ['M', 0, 0]
