@@ -1,40 +1,46 @@
 import numpy as np
 import math
 import matplotlib.pyplot as plt
-from filehandling import filepath
+import pickle
+import filehandling
 from cavityclass import *
 
 V_i = int(input('Enter Position of Nd:YVO_4 in Cavity:    '))
 M_2 = float(input('Enter M-Squared: '))
 LAM = 1064*10**(-7) * M_2
 
+with open('filepath.pkl', 'rb') as f:
+	filepath = pickle.load(f)
+	
 laser = Cavity(filepath, LAM)
 
 #Set "reasonable" range for thermal lensing
-thermal_range = np.arange(16,24,.1)
+thermal_range = np.arange(10,30,1)
 
 #Create figure, axes, and colormap
-cm = plt.get_cmap('Reds')
-colors = [cm((1.0 - 1.*i/len(thermal_range))) for i in range(len(thermal_range))]
+cm_r = plt.get_cmap('Reds')
+reds = [cm_r((1.0 - 1.*i/len(thermal_range))) for i in range(len(thermal_range))]
+cm_b = plt.get_cmap('Blues')
+blues = [cm_b((1.0 - 1.*i/len(thermal_range))) for i in range(len(thermal_range))]
 fig = plt.figure()
 
 #If x and y cavity are equal only one set of axes is defined,
 #if they are not equal a set of axes is defined for each cavity. 
 if laser.get_xcav().cavity == laser.get_ycav().cavity:
     ax = fig.add_subplot(1,1,1)
-    ax.set_prop_cycle('color',colors)
+    ax.set_prop_cycle('color',reds)
     ax.set_xlabel('Z(cm)')
     ax.set_ylabel('Waist(cm)')
     ax.set_ylim(0,.2)
 else:
     ax_x = fig.add_subplot(2,1,1)
-    ax_x.set_prop_cycle('color',colors)
+    ax_x.set_prop_cycle('color',blues)
     ax_x.set_xlabel('Z(cm)')
     ax_x.set_ylabel('Waist(cm)')
     ax_x.set_ylim(0,.2)
     
     ax_y = fig.add_subplot(2,1,2)
-    ax_y.set_prop_cycle('color',colors)
+    ax_y.set_prop_cycle('color',reds)
     ax_y.set_xlabel('Z(cm)')
     ax_y.set_ylabel('Waist(cm)')
     ax_y.set_ylim(0,.2)

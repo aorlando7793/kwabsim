@@ -1,15 +1,18 @@
 import numpy as np
 import math
 import matplotlib.pyplot as plt
-from filehandling import filepath
+import filehandling
+import pickle
 from cavityclass import *
-
 
 M_2x = float(input('Enter M-Squared for x-axis:    '))
 M_2y = float(input('Enter M-Squared for y-axis:    '))
 LAM = 1064*10**(-7)
 LAM_x = LAM * M_2x
 LAM_y = LAM * M_2y
+
+with open('filepath.pkl', 'rb') as f:
+	filepath = pickle.load(f)
 
 laser = Cavity(filepath, LAM)
 
